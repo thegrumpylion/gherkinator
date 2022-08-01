@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -11,6 +12,16 @@ import (
 	messages "github.com/cucumber/common/messages/go/v19"
 	"github.com/spf13/cobra"
 )
+
+type fileContext struct {
+  Steps []Step
+}
+
+type Step struct {
+  Kind string
+  Text string
+  Vars string
+}
 
 var rootCmd = &cobra.Command{
   Use: "gherkinator",
@@ -22,60 +33,57 @@ var rootCmd = &cobra.Command{
       return err
     }
 
-    tpl, err := template.New("cypress").ParseFiles("template/cypress")
+    tpl, err := template.New("cypress").Funcs(map[string]interface{}{}).ParseFiles("template/cypress")
     if err != nil {
       return err
     }
 
-    tpl.Funcs(map[string]interface{}{
+    outDir := "gen"
 
-    })
-
-    for p, f := range feat {
+    for path, doc := range feat {
       
-      fmt.Println(f.Feature.Name, p)
-      for _, v := range f.Feature.Children {
+      scns := []*messages.Scenario{}
+
+      for _, v := range doc.Feature.Children {
         if v.Scenario != nil {
           if v.Scenario.Keyword == "Scenario Outline" {
-            scns := expandScenarioOutline(v.Scenario)
-            for _, s := range scns {
-              printScenario(s)
-            }
+            scns = append(scns, expandScenarioOutline(v.Scenario)...)
             continue
           }
-          printScenario(v.Scenario)
+          scns = append(scns, v.Scenario)
         }
       }
+
+
     }
 
     return nil
   },
 }
 
+var matchString = regexp.MustCompile(`"[^"]+"`)
+var matchFloat = regexp.MustCompile(`\d+\.\d+`)
+var matchInt = regexp.MustCompile(`[-]??\d+`)
+
+
+func mkFileCtx(scns []*messages.Scenario) *fileContext {
+  ctx := fileContext{}
+  for _, s := range scns {
+
+  }
+  return &fileContext{}
+}
+
 func main() {
   rootCmd.Execute()
 }
 
-
 func features(s string) (map[string]*messages.GherkinDocument, error) {
 
   out := map[string]*messages.GherkinDocument{}
+  s = filepath.Clean(s)
 
-  fi, err := os.Stat(s)
-  if err != nil {
-    return nil, err
-  }
-
-  if fi.Mode().IsRegular() {
-    doc, err := parseFeatureFile(s)
-    if err != nil {
-      return nil, err
-    }
-    out[s] = doc
-    return out, nil
-  }
-
-  err = filepath.Walk(s, func(path string, info os.FileInfo, err error) error {
+  err := filepath.Walk(s, func(path string, info os.FileInfo, err error) error {
     if info.Mode().IsRegular() && strings.HasSuffix(path, ".feature") {
       doc, err := parseFeatureFile(path)
       if err != nil {
