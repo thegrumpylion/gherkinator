@@ -1,0 +1,34 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn
+
+PATH: 
+  /home/nikolas/bin:/home/nikolas/.local/bin:/usr/local/bin:/home/nikolas/bin:/home/nikolas/.local/bin:/usr/local/bin:/opt/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/nikolas/.dotnet/tools:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.7.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: getaddrinfo EAI_AGAIN registry.yarnpkg.com
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:111:26)
+
+npm manifest: 
+  {
+    "dependencies": {
+      "@badeball/cypress-cucumber-preprocessor": "latest",
+      "@bahmutov/cypress-esbuild-preprocessor": "latest",
+      "cypress": "latest",
+      "typescript": "latest"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

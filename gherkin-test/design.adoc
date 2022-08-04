@@ -1,0 +1,23 @@
+= invoice app
+
+== screens
+
+* list of created invoices
+* create new invoice
+* edit invoice
+* invoice details
+
+== invoice model
+
+* id
+* receiver
+* sender
+* date_created
+* line_items
+* total
+
+== line item model
+
+* description
+* amount
+

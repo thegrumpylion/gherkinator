@@ -1,7 +1,10 @@
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor'
 
 {{- range .Steps}}
+
 {{.Kind}}('{{.Text}}', ({{.Vars}}) => {
   // TODO: implement step
+  {{.Body}}
 });
+
 {{- end}}
