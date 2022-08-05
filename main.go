@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 
-		tpl, err := template.New("cypress").Funcs(map[string]interface{}{}).ParseFiles("template/cypress")
+		tpl, err := template.New("cypress").Funcs(map[string]interface{}{}).Parse(cypressTmpl)
 		if err != nil {
 			return err
 		}
@@ -294,3 +294,12 @@ func replacePlaceholderDataTable(dt *messages.DataTable, m map[string]string) *m
 	}
 	return ret
 }
+
+var cypressTmpl = `import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor'
+
+{{- range .Steps}}
+{{.Kind}}('{{.Text}}', ({{.Vars}}) => {
+  // TODO: implement step
+});
+{{- end}}
+`
